@@ -246,6 +246,33 @@ function App() {
   const [formMode, setFormMode] = useState<FormMode>(null)
   const [editingJob, setEditingJob] = useState<Job | undefined>()
   const [filter, setFilter] = useState<Job['status'] | 'All'>('All')
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    try {
+      const savedTheme = window.localStorage.getItem('theme') as 'light' | 'dark' | null
+      return savedTheme || 'light'
+    } catch {
+      return 'light'
+    }
+  })
+
+  // Apply theme on mount and when it changes
+  useEffect(() => {
+    const root = document.documentElement
+    if (theme === 'dark') {
+      root.setAttribute('data-theme', 'dark')
+    } else {
+      root.removeAttribute('data-theme')
+    }
+    try {
+      window.localStorage.setItem('theme', theme)
+    } catch (error) {
+      console.error(error)
+    }
+  }, [theme])
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'))
+  }
 
   const handleAddJob = (jobData: Omit<Job, 'id'>) => {
     const newJob: Job = {
@@ -298,6 +325,9 @@ function App() {
       <header className="header">
         <h1>Job Tracker</h1>
         <p>Track your job applications and stay organized</p>
+        <button className="theme-toggle" onClick={toggleTheme} title="Toggle dark mode">
+          {theme === 'light' ? '🌙' : '☀️'}
+        </button>
       </header>
 
       <div className="stats-container">
