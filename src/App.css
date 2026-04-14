@@ -139,6 +139,17 @@ body {
   background-color: #dc2626;
 }
 
+.btn-info {
+  background-color: #0ea5e9;
+  color: white;
+  padding: 6px 12px;
+  font-size: 0.85em;
+}
+
+.btn-info:hover {
+  background-color: #0284c7;
+}
+
 .btn-large {
   padding: 12px 24px;
   font-size: 1.05em;
@@ -254,6 +265,31 @@ body {
   gap: 8px;
 }
 
+.comments-row {
+  background-color: var(--background);
+}
+
+.comments-content {
+  padding: 16px;
+  background-color: var(--surface);
+  border-left: 4px solid var(--primary);
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+.comments-content strong {
+  color: var(--text);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.comments-content p {
+  color: var(--text-light);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 .empty-state {
   text-align: center;
   padding: 40px 20px;
@@ -301,17 +337,20 @@ body {
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 1em;
   font-family: inherit;
   transition: border-color 0.2s ease;
+  resize: vertical;
 }
 
 .form-group input:focus,
-.form-group select:focus {
+.form-group select:focus,
+.form-group textarea:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);

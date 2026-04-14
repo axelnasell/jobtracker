@@ -8,6 +8,7 @@ interface Job {
   position: string
   dateApplied: string
   status: 'Applied' | 'Interviewing' | 'Rejected' | 'Offered'
+  comments: string
 }
 
 type FormMode = 'add' | 'edit' | null
@@ -50,6 +51,7 @@ function JobForm({ mode, initialJob, onSubmit, onCancel }: JobFormProps) {
     position: initialJob?.position || '',
     dateApplied: initialJob?.dateApplied || new Date().toISOString().split('T')[0],
     status: initialJob?.status || 'Applied' as const,
+    comments: initialJob?.comments || '',
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -107,6 +109,16 @@ function JobForm({ mode, initialJob, onSubmit, onCancel }: JobFormProps) {
               <option value="Offered">Offered</option>
             </select>
           </div>
+          <div className="form-group">
+            <label htmlFor="comments">Comments</label>
+            <textarea
+              id="comments"
+              value={formData.comments}
+              onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+              placeholder="Add any notes about this job application..."
+              rows={4}
+            />
+          </div>
           <div className="form-actions">
             <button type="submit" className="btn btn-primary">
               {mode === 'add' ? 'Add Job' : 'Update Job'}
@@ -129,6 +141,8 @@ interface JobListProps {
 }
 
 function JobList({ jobs, onEdit, onDelete }: JobListProps) {
+  const [expandedJobId, setExpandedJobId] = useState<string | null>(null)
+
   const getStatusColor = (status: Job['status']) => {
     switch (status) {
       case 'Applied':
@@ -160,24 +174,45 @@ function JobList({ jobs, onEdit, onDelete }: JobListProps) {
         </thead>
         <tbody>
           {jobs.map((job) => (
-            <tr key={job.id}>
-              <td className="company-cell">{job.company}</td>
-              <td>{job.position}</td>
-              <td>{new Date(job.dateApplied).toLocaleDateString()}</td>
-              <td>
-                <span className={`status-badge ${getStatusColor(job.status)}`}>
-                  {job.status}
-                </span>
-              </td>
-              <td className="actions-cell">
-                <button className="btn btn-sm btn-edit" onClick={() => onEdit(job)}>
-                  Edit
-                </button>
-                <button className="btn btn-sm btn-delete" onClick={() => onDelete(job.id)}>
-                  Delete
-                </button>
-              </td>
-            </tr>
+            <>
+              <tr>
+                <td className="company-cell">{job.company}</td>
+                <td>{job.position}</td>
+                <td>{new Date(job.dateApplied).toLocaleDateString()}</td>
+                <td>
+                  <span className={`status-badge ${getStatusColor(job.status)}`}>
+                    {job.status}
+                  </span>
+                </td>
+                <td className="actions-cell">
+                  {job.comments && (
+                    <button
+                      className="btn btn-sm btn-info"
+                      onClick={() => setExpandedJobId(expandedJobId === job.id ? null : job.id)}
+                      title="View/hide comments"
+                    >
+                      {expandedJobId === job.id ? 'Hide' : 'Show'} Comments
+                    </button>
+                  )}
+                  <button className="btn btn-sm btn-edit" onClick={() => onEdit(job)}>
+                    Edit
+                  </button>
+                  <button className="btn btn-sm btn-delete" onClick={() => onDelete(job.id)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+              {expandedJobId === job.id && job.comments && (
+                <tr className="comments-row">
+                  <td colSpan={5}>
+                    <div className="comments-content">
+                      <strong>Comments:</strong>
+                      <p>{job.comments}</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </>
           ))}
         </tbody>
       </table>
