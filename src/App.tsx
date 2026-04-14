@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 
 // Types
@@ -53,6 +53,26 @@ function JobForm({ mode, initialJob, onSubmit, onCancel }: JobFormProps) {
     status: initialJob?.status || 'Applied' as const,
     comments: initialJob?.comments || '',
   })
+
+  useEffect(() => {
+    if (mode === 'edit' && initialJob) {
+      setFormData({
+        company: initialJob.company,
+        position: initialJob.position,
+        dateApplied: initialJob.dateApplied,
+        status: initialJob.status,
+        comments: initialJob.comments,
+      })
+    } else if (mode === 'add') {
+      setFormData({
+        company: '',
+        position: '',
+        dateApplied: new Date().toISOString().split('T')[0],
+        status: 'Applied',
+        comments: '',
+      })
+    }
+  }, [mode, initialJob])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
