@@ -322,9 +322,13 @@ body {
   color: #065f46;
 }
 
+/* Redundant, can be used for future styling */
 .actions-cell {
-  display: flex;
-  gap: 8px;
+  white-space: nowrap;
+}
+
+.actions-cell .btn + .btn {
+  margin-left: 8px;
 }
 
 .comments-row {
